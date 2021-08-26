@@ -60,15 +60,18 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
         
         output_path = QtWidgets.QFileDialog.getExistingDirectory(dir=directory)
 
-        output_path =  output_path +"\\"+"12"+".fbx"
+        output_path =  output_path +"\\"+"12"
 
         self.selectpath_btn.setText(output_path)
 
     def export_fbx (self):
-
         path = self.selectpath_btn.text()
-
         rt.exportFile(path,rt.name('noPrompt'),selectedOnly=True,using=rt.FBXEXP)
+
+
+    def export_obj (self):
+        path = self.selectpath_btn.text()
+        rt.exportFile(path,rt.name('noPrompt'),selectedOnly=True,using=rt.ObjExp)
 
     def initUI(self):
         main_layout = QtWidgets.QVBoxLayout()
@@ -103,16 +106,19 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
 
 
         #
-        self.selectpath_btn = QtWidgets.QPushButton("........")
+        self.selectpath_btn = QtWidgets.QPushButton("选择输出路径........")
         self.selectpath_btn.clicked.connect(self.select_path)
         main_layout.addWidget(self.selectpath_btn)
 
         self.selectpath_btn = QtWidgets.QLineEdit()
         main_layout.addWidget(self.selectpath_btn)
 
-        export_btn = QtWidgets.QPushButton("导出选择")
+        export_btn = QtWidgets.QPushButton("导出FBX")
         export_btn.clicked.connect(self.export_fbx)
         main_layout.addWidget(export_btn)
+        export_btn2 = QtWidgets.QPushButton("导出OBJ")
+        export_btn2.clicked.connect(self.export_obj)
+        main_layout.addWidget(export_btn2)
 
 
         widget = QtWidgets.QWidget()
