@@ -2,8 +2,9 @@ from PySide2 import QtCore
 from PySide2 import QtGui
 from PySide2 import QtWidgets
 import qtmax
-
 from pymxs import runtime as rt
+
+import os
 
 def make_editpoly():
     rt.convertToPoly(rt.selection)
@@ -17,7 +18,7 @@ def make_material():
     for x in a :
         x.material = m
 
-    return
+    return 
 
 
 
@@ -30,13 +31,16 @@ def clear_material():
 def open_uv():
     a = rt.selection
     uv = rt.Unwrap_UVW()
-    rt.addModifier(a[0],uv)
+    for x in a :
+        rt.addModifier(x,uv)
+
     uv.edit()
+    
+        
 
 
-def export_fbx ():
 
-    rt.exportFile("D:\\12.fbx",rt.name('noPrompt'),selectedOnly=True,using=rt.FBXEXP)
+
 
 
 
@@ -47,6 +51,24 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
         self.setWindowTitle('启虹游戏工具盒')
         self.initUI()
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+
+    def select_path(self):
+        directory = os.path.dirname(self.selectpath_btn.text())
+        if not os.path.exists(directory):
+                directory = ''
+
+        
+        output_path = QtWidgets.QFileDialog.getExistingDirectory(dir=directory)
+
+        output_path =  output_path +"\\"+"12"+".fbx"
+
+        self.selectpath_btn.setText(output_path)
+
+    def export_fbx (self):
+
+        path = self.selectpath_btn.text()
+
+        rt.exportFile(path,rt.name('noPrompt'),selectedOnly=True,using=rt.FBXEXP)
 
     def initUI(self):
         main_layout = QtWidgets.QVBoxLayout()
@@ -76,21 +98,21 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
         uv_btn.clicked.connect(open_uv)
         main_layout.addWidget(uv_btn)
         #
-        label3 = QtWidgets.QLabel("导入导出")
+        label3 = QtWidgets.QLabel("导出")
         main_layout.addWidget(label3)
 
+
+        #
+        self.selectpath_btn = QtWidgets.QPushButton("........")
+        self.selectpath_btn.clicked.connect(self.select_path)
+        main_layout.addWidget(self.selectpath_btn)
+
+        self.selectpath_btn = QtWidgets.QLineEdit()
+        main_layout.addWidget(self.selectpath_btn)
+
         export_btn = QtWidgets.QPushButton("导出选择")
-        export_btn.clicked.connect(export_fbx)
+        export_btn.clicked.connect(self.export_fbx)
         main_layout.addWidget(export_btn)
-
-
-        import_btn = QtWidgets.QPushButton("导入")
-        #import_btn.clicked.connect()
-        main_layout.addWidget(import_btn)
-
-
-
-
 
 
         widget = QtWidgets.QWidget()
