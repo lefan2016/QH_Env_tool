@@ -3,7 +3,6 @@ from PySide2 import QtGui
 from PySide2 import QtWidgets
 import qtmax
 from pymxs import runtime as rt
-
 import os
 
 def make_editpoly():
@@ -35,14 +34,10 @@ def open_uv():
         rt.addModifier(x,uv)
 
     uv.edit()
-    
-        
 
 
-
-
-
-
+def fbx_setting():
+    rt.OpenFbxSetting()   
 
 class PyMaxDockWidget(QtWidgets.QDockWidget):
     def __init__(self, parent=None):
@@ -55,13 +50,9 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
     def select_path(self):
         directory = os.path.dirname(self.selectpath_btn.text())
         if not os.path.exists(directory):
-                directory = ''
-
-        
+                directory = ''       
         output_path = QtWidgets.QFileDialog.getExistingDirectory(dir=directory)
-
-        output_path =  output_path +"\\"+"12"
-
+        output_path =  output_path +"\\"
         self.selectpath_btn.setText(output_path)
 
     def export_fbx (self):
@@ -104,8 +95,10 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
         label3 = QtWidgets.QLabel("导出")
         main_layout.addWidget(label3)
 
+        self.fbxsetting_btn = QtWidgets.QPushButton("FBX输出设置........")
+        self.fbxsetting_btn.clicked.connect(fbx_setting)
+        main_layout.addWidget(self.fbxsetting_btn)
 
-        #
         self.selectpath_btn = QtWidgets.QPushButton("选择输出路径........")
         self.selectpath_btn.clicked.connect(self.select_path)
         main_layout.addWidget(self.selectpath_btn)
@@ -113,6 +106,9 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
         self.selectpath_btn = QtWidgets.QLineEdit()
         main_layout.addWidget(self.selectpath_btn)
 
+
+
+   
         export_btn = QtWidgets.QPushButton("导出FBX")
         export_btn.clicked.connect(self.export_fbx)
         main_layout.addWidget(export_btn)
