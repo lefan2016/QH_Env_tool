@@ -16,12 +16,15 @@ def make_material():
         m = rt.ai_Standard_Surface()
         for x in a :
             x.material = m
-    return 
+        rt.redrawViews()#视图更新
+    return
+
 
 def clear_material():
     with pymxs.undo(True):
         for obj in rt.selection:
             obj.material = rt.undefined
+        rt.redrawViews()
 
 def open_uv():
     a = rt.selection
@@ -78,6 +81,7 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
                 rt.setProperty(x,"pos.x", 0.0)
                 rt.setProperty(x,"pos.y", 0.0)
                 rt.setProperty(x,"pos.z", 0.0)
+            rt.redrawViews()
 
     def bake(self):
         
@@ -124,6 +128,13 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
             rt.execute('a.addnodes $')
             rt.execute('a.setname "low"')
 
+    def resert(self):
+        a = rt.selection
+        for x in a:
+            rt.ResetXForm(x)
+            rt.convertToPoly(x)
+
+
     def initUI(self):
         main_layout = QtWidgets.QVBoxLayout()
         
@@ -133,6 +144,10 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
         editpoly_btn = QtWidgets.QPushButton("塌陷并转换为poly")
         editpoly_btn.clicked.connect(make_editpoly)
         main_layout.addWidget(editpoly_btn)
+
+        resert_btn = QtWidgets.QPushButton("resert xform(editpoly)")
+        resert_btn.clicked.connect(self.resert)
+        main_layout.addWidget(resert_btn)
 
         remove_btn = QtWidgets.QPushButton("移除边/点")
         remove_btn.clicked.connect(self.remove)
