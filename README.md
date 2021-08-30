@@ -4,4 +4,4 @@
 ### 工具背景
 为公司场景项目流程制作提供一个使用起来更加舒适快捷的3dmax工具盒子
 ### 界面
-![Image text](https://github.com/fxcfxcfxc/QH_TOOL/blob/main/readme-image/01.png)
+![Image text](./readme-image/01.png)
