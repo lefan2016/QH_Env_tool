@@ -141,11 +141,11 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
         label = QtWidgets.QLabel("Mesh-多边形")
         main_layout.addWidget(label)
 
-        editpoly_btn = QtWidgets.QPushButton("塌陷并转换为poly")
+        editpoly_btn = QtWidgets.QPushButton("塌陷+Editablepoly")
         editpoly_btn.clicked.connect(make_editpoly)
         main_layout.addWidget(editpoly_btn)
 
-        resert_btn = QtWidgets.QPushButton("resert xform(editpoly)")
+        resert_btn = QtWidgets.QPushButton("resert xform")
         resert_btn.clicked.connect(self.resert)
         main_layout.addWidget(resert_btn)
 
