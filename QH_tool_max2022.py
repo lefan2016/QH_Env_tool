@@ -41,8 +41,8 @@ def open_uv():
     for x in a :
         rt.addModifier(x,uv)
 
-    rt.setCommandPanelTaskMode(rt.name('create'))
-    rt.setCommandPanelTaskMode(rt.name('modify'))
+    #rt.setCommandPanelTaskMode(rt.name('create'))
+    #rt.setCommandPanelTaskMode(rt.name('modify'))
     uv.edit()
 
 
