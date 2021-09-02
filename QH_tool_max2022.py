@@ -178,10 +178,43 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
             rt.LayerManager.deleteLayerByName(x)
 
 
+    def cut(self):
+        with pymxs.undo(True):
+            if list(rt.selection) == []:
+                print("0")
+            else: 
+                rt.setCommandPanelTaskMode(rt.name('modify'))
+                rt.execute('macros.run "Ribbon - Modeling" "CutsCut"')
+
+    def inset(self):
+        with pymxs.undo(True):
+            rt.execute('macros.run "Ribbon - Modeling" "EPoly_Inset"')
+    
+    def Bevel(self):
+        with pymxs.undo(True):
+            rt.execute('macros.run "Ribbon - Modeling" "EPoly_Bevel"')
+
+
+    def SwiftLoop(self):
+        with pymxs.undo(True):
+            rt.execute('macros.run "PolyTools" "SwiftLoop"')
+
+
+    def TargetWeld(self):
+        with pymxs.undo(True):
+            rt.execute('macros.run "Editable Polygon Object" "EPoly_TargetWeld"')
+
+    def Collapse(self):
+        with pymxs.undo(True):
+            rt.execute('macros.run "Ribbon - Modeling" "GeometryCollapse"')
+    
+    
+
+
     def initUI(self):
         main_layout = QtWidgets.QVBoxLayout()
 
-        label_Creat = QtWidgets.QLabel("Creat-创建基本体(0,0,0)")
+        label_Creat = QtWidgets.QLabel("Creat-创建基本体Maya模式")
         main_layout.addWidget(label_Creat)
         #
         plane_layout = QtWidgets.QHBoxLayout()
@@ -220,18 +253,42 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
         label_m = QtWidgets.QLabel("Modeling-建模")
         main_layout.addWidget(label_m)
 
-        remove_btn = QtWidgets.QPushButton("移除边/点")
+        remove_btn = QtWidgets.QPushButton("Remove")
         remove_btn.clicked.connect(self.remove)
         main_layout.addWidget(remove_btn)
+
+        cut_btn = QtWidgets.QPushButton("Cut")
+        cut_btn.clicked.connect(self.cut)
+        main_layout.addWidget(cut_btn)
+
+        inset_btn = QtWidgets.QPushButton("inset")
+        inset_btn.clicked.connect(self.inset)
+        main_layout.addWidget(inset_btn)
+
+        Bevel_btn = QtWidgets.QPushButton("Bevel")
+        Bevel_btn.clicked.connect(self.Bevel)
+        main_layout.addWidget(Bevel_btn)
+
+        SwiftLoop_btn = QtWidgets.QPushButton("EdgeLoop")
+        SwiftLoop_btn.clicked.connect(self.SwiftLoop)
+        main_layout.addWidget(SwiftLoop_btn)
+
+        TargetWeld_btn = QtWidgets.QPushButton("TargetWeld")
+        TargetWeld_btn.clicked.connect(self.TargetWeld)
+        main_layout.addWidget(TargetWeld_btn)
+
+        Collapse_btn = QtWidgets.QPushButton("Collapse")
+        Collapse_btn.clicked.connect(self.Collapse)
+        main_layout.addWidget(Collapse_btn)
 
         Tr_label = QtWidgets.QLabel("Pivot-轴")
         main_layout.addWidget(Tr_label)
 
-        bt_cenceterObj = QtWidgets.QPushButton("Center物体中心")
+        bt_cenceterObj = QtWidgets.QPushButton(" To Center")
         bt_cenceterObj.clicked.connect(self.cencter_select)
         main_layout.addWidget(bt_cenceterObj)
 
-        bt_world = QtWidgets.QPushButton("世界[0,0,0]")
+        bt_world = QtWidgets.QPushButton("To world[0,0,0]")
         bt_world.clicked.connect(self.world_select)
         main_layout.addWidget(bt_world)
 
@@ -339,7 +396,7 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
         widget = QtWidgets.QWidget()
         widget.setLayout(main_layout)
         self.setWidget(widget)
-        self.resize(300, 600)
+        self.resize(220, 600)
 
 def main():
     
