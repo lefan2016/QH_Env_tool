@@ -19,7 +19,16 @@ def make_material():
         rt.redrawViews()#视图更新
     return
 
-
+def layer_material():
+    with pymxs.undo(True):
+        a = rt.selection
+        for x in a :
+            m = rt.ai_Standard_Surface()
+            m.name = x.name
+            x.material = m
+        rt.redrawViews()#视图更新
+    return
+    
 def clear_material():
     with pymxs.undo(True):
         for obj in rt.selection:
@@ -45,7 +54,7 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
     def __init__(self, parent=None):
         super(PyMaxDockWidget, self).__init__(parent)
         self.setWindowFlags(QtCore.Qt.Tool)
-        self.setWindowTitle('启虹游戏_场景工具盒')
+        self.setWindowTitle('启虹游戏-场景工具')
         self.initUI()
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
@@ -109,7 +118,6 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
             rt.execute('$.EditablePoly.makeHardEdges 1')
             rt.execute('$.EditablePoly.makePlanar #Face')
 
-
     def remove(self):
         with pymxs.undo(True):
             rt.execute('$.EditablePoly.Remove ()')
@@ -134,33 +142,96 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
             rt.ResetXForm(x)
             rt.convertToPoly(x)
 
+    def creat_plane(self):
+        with pymxs.undo(True):
+            a = rt.plane()
+            a.lengthsegs = 1
+            a.widthsegs = 1
+            rt.redrawViews()
+
+    def creat_box(self):
+        with pymxs.undo(True):
+            a = rt.box()
+            rt.redrawViews()
+
+    def creat_cylinder(self):
+        with pymxs.undo(True):
+            a = rt.cylinder()
+            a.sides = 12
+            rt.redrawViews()
+
+    def creat_sphere(self):
+        with pymxs.undo(True):
+            a = rt.sphere()
+            a.segs = 12
+            rt.redrawViews()
+
+    def detel_layer(self):
+        a = rt.LayerManager.count
+        list = []
+        for x in range(a):
+            layer = rt.LayerManager.getLayer(x)
+            if layer.canDelete():
+                list.append(layer.name)
+                
+        for x in list:
+            rt.LayerManager.deleteLayerByName(x)
+
 
     def initUI(self):
         main_layout = QtWidgets.QVBoxLayout()
+
+        label_Creat = QtWidgets.QLabel("Creat-创建基本体(0,0,0)")
+        main_layout.addWidget(label_Creat)
+        #
+        plane_layout = QtWidgets.QHBoxLayout()
+        plane_btn = QtWidgets.QPushButton("plane")
+        plane_btn.clicked.connect(self.creat_plane)
+        plane_layout.addWidget(plane_btn)
+
+        box_btn = QtWidgets.QPushButton("box")
+        box_btn.clicked.connect(self.creat_box)
+        plane_layout.addWidget(box_btn)
+
+        main_layout.addLayout(plane_layout)
+        #
+        sphere_layout = QtWidgets.QHBoxLayout()
+        sphere_btn = QtWidgets.QPushButton("sphere")
+        sphere_btn.clicked.connect(self.creat_sphere)
+        sphere_layout.addWidget(sphere_btn)
         
-        label = QtWidgets.QLabel("Mesh-多边形")
+        cylinder_btn = QtWidgets.QPushButton("cylinder")
+        cylinder_btn.clicked.connect(self.creat_cylinder)
+        sphere_layout.addWidget(cylinder_btn)
+
+        main_layout.addLayout(sphere_layout)
+        #
+        label = QtWidgets.QLabel("Mesh-物体")
         main_layout.addWidget(label)
 
-        editpoly_btn = QtWidgets.QPushButton("塌陷+Editablepoly")
+        editpoly_btn = QtWidgets.QPushButton("Editablepoly")
         editpoly_btn.clicked.connect(make_editpoly)
         main_layout.addWidget(editpoly_btn)
 
-        resert_btn = QtWidgets.QPushButton("resert xform")
+        resert_btn = QtWidgets.QPushButton("Resert xform")
         resert_btn.clicked.connect(self.resert)
         main_layout.addWidget(resert_btn)
+
+        label_m = QtWidgets.QLabel("Modeling-建模")
+        main_layout.addWidget(label_m)
 
         remove_btn = QtWidgets.QPushButton("移除边/点")
         remove_btn.clicked.connect(self.remove)
         main_layout.addWidget(remove_btn)
 
-        Tr_label = QtWidgets.QLabel("Pivot-变化")
+        Tr_label = QtWidgets.QLabel("Pivot-轴")
         main_layout.addWidget(Tr_label)
 
-        bt_cenceterObj = QtWidgets.QPushButton("枢轴到物体中心")
+        bt_cenceterObj = QtWidgets.QPushButton("Center物体中心")
         bt_cenceterObj.clicked.connect(self.cencter_select)
         main_layout.addWidget(bt_cenceterObj)
 
-        bt_world = QtWidgets.QPushButton("枢轴到[0,0,0]")
+        bt_world = QtWidgets.QPushButton("世界[0,0,0]")
         bt_world.clicked.connect(self.world_select)
         main_layout.addWidget(bt_world)
 
@@ -168,7 +239,7 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
         main_layout.addWidget(smoothing_lb)
 
 
-        smoothing_btn = QtWidgets.QPushButton("光滑组")
+        smoothing_btn = QtWidgets.QPushButton("一键光滑组")
         smoothing_btn.clicked.connect(self.smmothing)
         main_layout.addWidget(smoothing_btn)
 
@@ -180,9 +251,13 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
         label_m = QtWidgets.QLabel("Material-材质")
         main_layout.addWidget(label_m)
 
-        material_btn = QtWidgets.QPushButton("单一材质")
+        material_btn = QtWidgets.QPushButton("统一材质")
         material_btn.clicked.connect(make_material)
         main_layout.addWidget(material_btn)
+
+        layermaterial_btn = QtWidgets.QPushButton("多个材质(自动匹配物体名称)")
+        layermaterial_btn.clicked.connect(layer_material)
+        main_layout.addWidget(layermaterial_btn)
 
         materialclear_btn = QtWidgets.QPushButton("清除选择物体材质")
         materialclear_btn.clicked.connect(clear_material)
@@ -242,14 +317,22 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
         label_layer = QtWidgets.QLabel("Layer-图层")
         main_layout.addWidget(label_layer)
 
-        bt_high = QtWidgets.QPushButton('high')
+        layerscence_layout = QtWidgets.QHBoxLayout()
+        bt_high = QtWidgets.QPushButton('High_layer')
         bt_high.clicked.connect(self.layer_high)
-        main_layout.addWidget(bt_high)
+        layerscence_layout.addWidget(bt_high)
 
-
-        bt_low = QtWidgets.QPushButton('low')
+        
+        bt_low = QtWidgets.QPushButton('low_layer')
         bt_low.clicked.connect(self.layer_low)
-        main_layout.addWidget(bt_low)
+        layerscence_layout.addWidget(bt_low)
+
+
+        main_layout.addLayout(layerscence_layout)
+
+        del_low = QtWidgets.QPushButton('clean empty layer')
+        del_low.clicked.connect(self.detel_layer)
+        main_layout.addWidget(del_low)
 
 
 
