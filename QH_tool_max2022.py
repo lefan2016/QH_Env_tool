@@ -63,13 +63,14 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
         if not os.path.exists(directory):
             directory = ''       
         output_path = QtWidgets.QFileDialog.getExistingDirectory(dir=directory)
-        output_path =  output_path +"\\"
+        output_path =  output_path
         self.path_line.setText(output_path)
 
     def export_fbx(self):
-        path = self.path_line.text()
+        old_path = self.path_line.text()
+        new_path = old_path + '/'
         name = self.name_line.text()
-        rt.exportFile(path+name,rt.name('noPrompt'),selectedOnly=True,using=rt.FBXEXP)
+        rt.exportFile(new_path+name,rt.name('noPrompt'),selectedOnly=True,using=rt.FBXEXP)
 
     def export_obj(self):
         path = self.path_line.text()
@@ -396,7 +397,7 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
         widget = QtWidgets.QWidget()
         widget.setLayout(main_layout)
         self.setWidget(widget)
-        self.resize(220, 600)
+        self.resize(250, 600)
 
 def main():
     
