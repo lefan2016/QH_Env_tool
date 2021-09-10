@@ -54,7 +54,7 @@ class PyMaxDockWidget(QtWidgets.QDockWidget):
     def __init__(self, parent=None):
         super(PyMaxDockWidget, self).__init__(parent)
         self.setWindowFlags(QtCore.Qt.Tool)
-        self.setWindowTitle('启虹游戏-场景工具')
+        self.setWindowTitle('启虹游戏-场景效率工具')
         self.initUI()
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
